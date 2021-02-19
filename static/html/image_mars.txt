@@ -1,0 +1,12 @@
+﻿<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Привет, Марс!</title>
+  </head>
+  <body>
+    <h1>Жди нас, Марс!</h1>
+	<img src="static/images/mars.png" alt='Not found'>
+	<p>Вот она какая, красная планета.</p>
+  </body>
+</html>

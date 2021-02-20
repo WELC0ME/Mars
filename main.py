@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -32,6 +32,24 @@ def image_mars():
 @app.route('/promotion_image')
 def promotion_image():
     return open('static/html/promotion_image.txt', 'r', encoding='utf8').read()
+
+
+@app.route('/astronaut_selection', methods=['POST', 'GET'])
+def astronaut_selection():
+    if request.method == 'GET':
+        return open('static/html/astronaut_selection.txt', 'r',
+                    encoding='utf8').read()
+    elif request.method == 'POST':
+        print(request.form.get('surname'))
+        print(request.form.get('name'))
+        print(request.form.get('email'))
+        print(request.form.get('education'))
+        print(request.form.getlist('profession'))
+        print(request.form.get('sex'))
+        print(request.form.get('about'))
+        print(request.files['file'].read().decode('utf-8'))
+        print(request.form.get('accept'))
+        return "Форма отправлена"
 
 
 if __name__ == '__main__':

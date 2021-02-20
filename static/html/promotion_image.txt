@@ -9,7 +9,7 @@
   </head>
   <body>
     <h1>Жди нас, Марс!</h1>
-	<img src="static/img/mars.png" alt='Not found'>
+	<img src="static/images/mars.png" alt='Not found'>
 	<div class="alert alert-dark" role="alert">
 		<h2><strong>Человечество вырастает из детства.</strong></h2>
 	</div>

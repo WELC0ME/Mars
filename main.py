@@ -58,5 +58,11 @@ def choice(planet_name):
                 encoding='utf8').read().format(planet_name)
 
 
+@app.route('/results/<nickname>/<int:level>/<float:rating>')
+def results(nickname, level, rating):
+    return open('static/html/results.txt', 'r',
+                encoding='utf8').read().format(nickname, level, rating)
+
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')

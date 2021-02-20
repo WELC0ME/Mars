@@ -1,4 +1,5 @@
 from flask import Flask, request
+from PIL import Image
 
 app = Flask(__name__)
 
@@ -62,6 +63,19 @@ def choice(planet_name):
 def results(nickname, level, rating):
     return open('static/html/results.txt', 'r',
                 encoding='utf8').read().format(nickname, level, rating)
+
+
+@app.route('/load_photo', methods=['POST', 'GET'])
+def load_photo():
+    if request.method == 'POST':
+        try:
+            Image.open(request.files['file']).save('static/temp/loaded.png')
+            res = 'Image loaded'
+        except Exception as e:
+            res = 'Error: ' + str(e)
+        return res
+    elif request.method == 'GET':
+        return open('static/html/load_photo.txt', 'r', encoding='utf8').read()
 
 
 if __name__ == '__main__':

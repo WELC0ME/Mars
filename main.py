@@ -1,4 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+from PIL import Image
+import os
 
 app = Flask(__name__)
 
@@ -93,6 +95,23 @@ def table(sex, age):
         'age': int(age),
     }
     return render_template('table.html', **params)
+
+
+@app.route('/galery', methods=['POST', 'GET'])
+def galery():
+    if request.method == 'POST':
+        try:
+            files = os.listdir('static/images/temp')
+            number = str(int(files[-1][:-4]) + 1) if len(files) > 0 else '0'
+            Image.open(request.files['file']
+                       ).save('static/images/temp/' + number + '.png')
+        except Exception as e:
+            print(e)
+    params = {
+        'images': os.listdir('static/images/temp'),
+    }
+    print(os.listdir('static/images/temp'))
+    return render_template('galery.html', **params)
 
 
 if __name__ == '__main__':

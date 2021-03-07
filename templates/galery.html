@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="../static/css/galery.css" />
+<center>
+    <h2>Пейзажи Марса</h2>
+    <div class='block'>
+    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+      <div class="carousel-inner">
+        {% for image in images %}
+            <div class="carousel-item {% if loop.first %} active {% endif%}">
+              <img class="d-block w-100" src="static/images/temp/{{ image }}" alt="">
+            </div>
+        {% endfor %}
+      </div>
+    </div>
+
+      <div class="alert alert-warning" role="alert">
+        <div>
+          <form class="login_form" method="post" enctype="multipart/form-data">
+          <div class="form-group">
+            <label for="photo">Добавить картинку</label>
+            <p></p>
+            <input type="file" class="form-control-file" id="photo" name="file">
+          </div>
+          <p></p>
+          <img src="static/temp/loaded.png" alt=''>
+          <p></p>
+          <button type="submit" class="btn btn-primary">Отправить</button>
+        </form>
+        </div>
+      </div>
+  </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</center>
+{% endblock %}

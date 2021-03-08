@@ -5,6 +5,14 @@ import os
 app = Flask(__name__)
 
 
+@app.route('/<title>')
+def index(title):
+    params = {
+        'title': title,
+    }
+    return render_template('base.html', **params)
+
+
 @app.route('/index/<title>')
 def index(title):
     params = {
@@ -110,7 +118,6 @@ def galery():
     params = {
         'images': os.listdir('static/images/temp'),
     }
-    print(os.listdir('static/images/temp'))
     return render_template('galery.html', **params)
 
 

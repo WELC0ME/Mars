@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Andy",
+    "surname": "Black",
+    "photo": "static/images/members/00.png",
+    "specialties": [
+      "pilot",
+      "engineer"
+    ]
+  },
+  {
+    "name": "Twist",
+    "surname": "Oliver",
+    "photo": "static/images/members/01.jpg",
+    "specialties": [
+      "capitan",
+      "assistant"
+    ]
+  },
+  {
+    "name": "Joe",
+    "surname": "Smith",
+    "photo": "static/images/members/02.jpg",
+    "specialties": [
+      "specialist",
+      "helper"
+    ]
+  }
+]

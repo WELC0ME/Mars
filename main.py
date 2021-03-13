@@ -131,5 +131,11 @@ def login():
     return render_template('login.html', title='Авторизация', form=form)
 
 
+@app.route('/member')
+def member():
+    users = eval(open('templates/members.json', 'r', encoding='utf8').read())
+    return render_template('member.html', title='Mars', users=users)
+
+
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')

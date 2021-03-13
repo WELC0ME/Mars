@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% set user = users|random %}
+<center>
+    <h4>{{user.name}} {{user.surname}}</h4>
+    <img src={{user.photo}} alt="">
+    <p>{{user.specialties|join(', ')}}</p>
+</center>
+{% endblock %}

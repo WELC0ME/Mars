@@ -2,6 +2,9 @@ from flask import Flask, render_template, request, redirect
 from PIL import Image
 import os
 from loginform import LoginForm
+from data import db_session
+from data.jobs import Jobs
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ChtobiVamBuloSlojneeZaponitGitMuPobedim'
@@ -137,5 +140,12 @@ def member():
     return render_template('member.html', title='Mars', users=users)
 
 
+@app.route('/journal')
+def journal():
+    db_sess = db_session.create_session()
+    return render_template("journal.html", jobs=db_sess.query(Jobs).all())
+
+
 if __name__ == '__main__':
+    db_session.global_init("db/mars_explorer.db")
     app.run(port=8080, host='127.0.0.1')

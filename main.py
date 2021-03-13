@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from PIL import Image
 import os
+from loginform import LoginForm
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'ChtobiVamBuloSlojneeZaponitGitMuPobedim'
 
 
 @app.route('/<title>')
-def index(title):
+def base(title):
     params = {
         'title': title,
     }
@@ -119,6 +121,14 @@ def galery():
         'images': os.listdir('static/images/temp'),
     }
     return render_template('galery.html', **params)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        return redirect('/success')
+    return render_template('login.html', title='Авторизация', form=form)
 
 
 if __name__ == '__main__':

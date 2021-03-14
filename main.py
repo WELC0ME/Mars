@@ -3,13 +3,30 @@ from PIL import Image
 import os
 from forms.loginform import LoginForm
 from forms.registerform import RegisterForm
+from forms.addjobform import AddJobForm
 from data import db_session
 from data.jobs import Jobs
 from data.users import User
+from flask_login import LoginManager, logout_user, login_required
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ChtobiVamBuloSlojneeZaponitGitMuPobedim'
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 @app.route('/<title>')
@@ -175,6 +192,24 @@ def register():
         db_sess.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route('/add_job', methods=['GET', 'POST'])
+def add_job():
+    form = AddJobForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        job = Jobs(
+            team_leader=form.team_leader_id.data,
+            job=form.job_title.data,
+            work_size=form.work_size.data,
+            collaborators=form.collaborators.data,
+            is_finished=form.is_finished.data,
+        )
+        db_sess.add(job)
+        db_sess.commit()
+        return redirect('/journal')
+    return render_template('add_job.html', title='Adding a job', form=form)
 
 
 if __name__ == '__main__':

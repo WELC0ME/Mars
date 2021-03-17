@@ -2,9 +2,11 @@ from flask import Flask, render_template, redirect, abort, request
 from data import db_session
 from data.jobs import Jobs
 from data.users import User
+from data.departments import Departments
 from forms.loginform import LoginForm
 from forms.jobform import JobForm
 from forms.registerform import RegisterForm
+from forms.departmentform import DepartmentForm
 from flask_login import (LoginManager, logout_user, login_required, login_user,
                          current_user)
 
@@ -32,6 +34,13 @@ def logout():
 def works_log():
     db_sess = db_session.create_session()
     return render_template("works_log.html", jobs=db_sess.query(Jobs).all())
+
+
+@app.route('/departments')
+def departments():
+    db_sess = db_session.create_session()
+    return render_template("departments.html",
+                           departments=db_sess.query(Departments).all())
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -100,6 +109,25 @@ def add_job():
 
 
 @login_required
+@app.route('/add_department', methods=['GET', 'POST'])
+def add_department():
+    form = DepartmentForm()
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        department = Departments(
+            title=form.title.data,
+            chief=form.chief_id.data,
+            members=form.members.data,
+            email=form.email.data,
+        )
+        db_sess.add(department)
+        db_sess.commit()
+        return redirect('/departments')
+    return render_template('add_department.html',
+                           title='Добавление департамента', form=form)
+
+
+@login_required
 @app.route('/edit_job/<int:id_>', methods=['GET', 'POST'])
 def edit_job(id_):
     form = JobForm()
@@ -132,6 +160,38 @@ def edit_job(id_):
 
 
 @login_required
+@app.route('/edit_department/<int:id_>', methods=['GET', 'POST'])
+def edit_department(id_):
+    form = DepartmentForm()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        department = db_sess.query(Departments).filter(
+            Departments.id == id_).first()
+        if department:
+            form.title.data = department.title
+            form.chief_id.data = department.chief
+            form.members.data = department.members
+            form.email.data = department.email
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        department = db_sess.query(Departments).filter(
+            Departments.id == id_).first()
+        if department:
+            department.title = form.title.data
+            department.chief = form.chief_id.data
+            department.members = form.members.data
+            department.email = form.email.data
+            db_sess.commit()
+            return redirect('/departments')
+        else:
+            abort(404)
+    return render_template('add_department.html',
+                           title='Редактирование департамента', form=form)
+
+
+@login_required
 @app.route('/remove_job/<int:id_>', methods=['GET', 'POST'])
 def remove_job(id_):
     db_sess = db_session.create_session()
@@ -142,6 +202,20 @@ def remove_job(id_):
     else:
         abort(404)
     return redirect('/')
+
+
+@login_required
+@app.route('/remove_department/<int:id_>', methods=['GET', 'POST'])
+def remove_department(id_):
+    db_sess = db_session.create_session()
+    department = db_sess.query(Departments).filter(
+        Departments.id == id_).first()
+    if department:
+        db_sess.delete(department)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/departments')
 
 
 if __name__ == '__main__':

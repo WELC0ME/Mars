@@ -1,1 +1,3 @@
-from . import users, jobs
+from . import users
+from . import jobs
+from . import category

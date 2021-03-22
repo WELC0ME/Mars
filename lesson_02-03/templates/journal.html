@@ -16,6 +16,7 @@
         <td valign="center">Team leader</td>
         <td valign="center">Duration</td>
         <td valign="center">List of collaborators</td>
+        <td valign="center">Hazard category</td>
         <td valign="center">Is finished</td>
     </tr>
     <tr style="background: #E3E3E3">
@@ -23,6 +24,15 @@
         <td valign="center">{{item.user.surname}} {{item.user.name}}</td>
         <td valign="center">{{item.work_size}} hours</td>
         <td valign="center">{{item.collaborators}}</td>
+
+        <td valign="center">
+            {% for i in item.categories %}
+                {{ i.name }}
+                {% if not loop.last %}
+                    ,
+                {% endif %}
+            {% endfor %}
+        </td>
         {% if item.is_finished == 1%}
             <td valign="center"><br/>Is finished<br/></td>
         {% elif item.is_finished == 0%}

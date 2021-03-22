@@ -1,6 +1,7 @@
 from data import db_session
 from data.jobs import Jobs
 from data.users import User
+from data.category import Category
 import datetime
 
 
@@ -59,8 +60,22 @@ if __name__ == '__main__':
     job.collaborators = '1, 2'
     job.start_date = datetime.datetime.now()
     job.is_finished = 0
-    db_sess = db_session.create_session()
     db_sess.add(job)
+    db_sess.commit()
+
+    category_01 = Category()
+    category_01.name = '1'
+    db_sess.add(category_01)
+    db_sess.commit()
+
+    category_02 = Category()
+    category_02.name = '2'
+    db_sess.add(category_02)
+    db_sess.commit()
+
+    category_03 = Category()
+    category_03.name = '3'
+    db_sess.add(category_03)
     db_sess.commit()
 
     job = Jobs()
@@ -70,7 +85,7 @@ if __name__ == '__main__':
     job.collaborators = '2, 3'
     job.start_date = datetime.datetime.now()
     job.is_finished = 0
-    db_sess = db_session.create_session()
+    job.categories.append(category_01)
     db_sess.add(job)
     db_sess.commit()
 
@@ -81,6 +96,7 @@ if __name__ == '__main__':
     job.collaborators = '1, 2'
     job.start_date = datetime.datetime.now()
     job.is_finished = 1
-    db_sess = db_session.create_session()
+    job.categories.append(category_02)
+    job.categories.append(category_03)
     db_sess.add(job)
     db_sess.commit()

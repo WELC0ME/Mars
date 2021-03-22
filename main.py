@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, abort, request
-from data import db_session
+from data import db_session, jobs_api, users_api
 from data.jobs import Jobs
 from data.users import User
 from data.departments import Departments
@@ -9,12 +9,21 @@ from forms.registerform import RegisterForm
 from forms.departmentform import DepartmentForm
 from flask_login import (LoginManager, logout_user, login_required, login_user,
                          current_user)
+from flask import make_response, jsonify
+from requests import get
+from PIL import Image
+import os
 
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ChtobiVamBuloSlojneeZaponitGitMuPobedim'
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 
 @login_manager.user_loader
@@ -218,6 +227,62 @@ def remove_department(id_):
     return redirect('/departments')
 
 
+@app.route('/users_show/<int:user_id>', methods=['GET'])
+def users_show(user_id):
+
+    def get_map_params(obj):
+        lower_corner = obj["boundedBy"]["Envelope"]["lowerCorner"].split()
+        upper_corner = obj["boundedBy"]["Envelope"]["upperCorner"].split()
+        pos = obj["Point"]["pos"]
+        longitude, lattitude = pos.split(" ")
+        return {
+            "ll": ",".join([longitude, lattitude]),
+            "spn": ",".join([
+                str((float(upper_corner[0]) - float(lower_corner[0])) / 2),
+                str((float(upper_corner[1]) - float(lower_corner[1])) / 2)
+            ]),
+            "l": "sat"
+        }
+
+    user = get('http://127.0.0.1:8080/api/users/' + str(user_id)).json()[
+        'users']
+    if 'error' in list(user.keys()):
+        params = {
+            'title': 'Nostalgy',
+            'error': user['error']
+        }
+    else:
+        try:
+            response = get("http://geocode-maps.yandex.ru/1.x/", params={
+                "apikey": "40d1649f-0493-4b70-98ba-98533de7710b",
+                "geocode": user['city_from'],
+                "format": "json"
+            }).json()
+            response = get("http://static-maps.yandex.ru/1.x/",
+                           params=get_map_params(
+                               response["response"]["GeoObjectCollection"][
+                                   "featureMember"][0]["GeoObject"]))
+            number = len(os.listdir('static/temp'))
+            with open('static/temp/' + str(number) + '.png', "wb") as file:
+                file.write(response.content)
+            hint = ''
+        except Exception:
+            img = Image.new((100, 100), 'RGB', (128, 128, 128))
+            img.save('static/temp/map.png')
+            hint = 'City not found'
+        params = {
+            'title': 'Nostalgy',
+            'name': user['name'],
+            'surname': user['surname'],
+            'city': user['city_from'],
+            'image': number,
+            'hint': hint,
+        }
+    return render_template('users_show.html', **params)
+
+
 if __name__ == '__main__':
     db_session.global_init("db/mars_explorer.db")
+    app.register_blueprint(jobs_api.blueprint)
+    app.register_blueprint(users_api.blueprint)
     app.run(port=8080, host='127.0.0.1')

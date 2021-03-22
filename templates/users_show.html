@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<center>
+    <h1>Nostalgy</h1>
+    {% if error %}
+        <h3> {{ error }}</h3>
+    {% else %}
+        <h3>{{ name }} {{ surname }}</h3>
+        <h3>Hometown {{ city }}</h3>
+        <img src="../static/temp/{{ image }}.png" alt="">
+        {{ hint }}
+    {% endif %}
+</center>
+{% endblock %}
